@@ -8,49 +8,41 @@ import javax.imageio.ImageIO;
 
 public class ImageToAscii {
 	
-	 int pixelsDown;
-	 int pixelsAcross;
 	 BufferedImage img;
-	 char[] pieces = {'@', '%', '#', '&', '8', 'B', 'G', 'O', '<', '=', '+', '~', '^', '*', '\'', '`', '-', ',', '.'};
+	 
+	 char[] pieces = {'@', '%', '#', '&', '8', 'B', 'G', 'O', '<', '+', '~', '^', '*', '\"', '\'', '`', '-', ',', '.', ' '};
+//	 char[] pieces = {'@', '%', '#', 'B', 'G', 'O', 't', '^', '*', '\"', '\'','`', '-', ',', '.', ' '};
 	
 	 int yBlocks;
 	 int xBlocks;
+	 int pxPerBlock;
 	
 	 int[][] map;
-	
-	 int pxPerBlock;
 	
 	public ImageToAscii(File f, int pixelsPerBlock) throws IOException{
 		
 		img = ImageIO.read(f);
 		pxPerBlock = pixelsPerBlock;
 		
-		int height = img.getHeight();
-		int width = img.getWidth();
-		
-		yBlocks = height / pxPerBlock;
-		xBlocks = width / pxPerBlock;
-		
-		pixelsDown = height / yBlocks;
-		pixelsAcross = width / xBlocks;
+		yBlocks = img.getHeight() / pxPerBlock;
+		xBlocks = img.getWidth() / pxPerBlock;
 		
 		map = new int[yBlocks][xBlocks];
 		
 		for(int y=0; y<yBlocks; y++){
 			for(int x=0; x < xBlocks; x++){
-				int i = getGreyscaleOfArea(x*pixelsAcross, y*pixelsDown);
-				map[y][x] = i/pieces.length;
+				int i = getGreyscaleOfArea(x*pxPerBlock, y*pxPerBlock);
+				map[y][x] = i/13;
 			}
 		}
 	}
 	
 	private int getGreyscaleOfArea(int x, int y){
 			
-		int counter = 0;
-		int sum = 0;
+		int counter = 0, sum = 0;
 		
-		for(int i=y; i<y+pixelsDown; i++){
-			for(int j=x; j<x+pixelsAcross; j++){
+		for(int i=y; i < y+pxPerBlock; i++){
+			for(int j=x; j < x+pxPerBlock; j++){
 				sum += getGreyscale(Integer.toHexString(img.getRGB(j, i)));
 				counter++;
 			}
